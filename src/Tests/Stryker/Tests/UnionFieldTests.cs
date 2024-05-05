@@ -49,11 +49,12 @@ public class UnionFieldTests
 
 
     [TestMethod]
-    public void ToStringValidation()
+    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
+    public void ToStringValidation(FlatBufferDeserializationOption option)
     {
-        Root parsed = new Root { Fields = new() { Union = new FunUnion("hi") } }.SerializeAndParse(FlatBufferDeserializationOption.Progressive, out byte[] buffer);
-
-        Assert.AreEqual("Root { Union { str = hi } }", parsed.ToString());
+        Root parsed = new Root { Fields = new() { Union = new FunUnion("hi") } }.SerializeAndParse(option);
+        string expectedString = "Root { Union { hi } }";
+        Assert.AreEqual(expectedString, parsed.ToString());
     }
 
     [TestMethod]
