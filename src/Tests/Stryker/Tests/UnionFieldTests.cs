@@ -55,7 +55,7 @@ public class UnionFieldTests
         Root parsed = new Root { Fields = new() { Union = new FunUnion("hi") } }.SerializeAndParse(option);
         Fields f = parsed.Fields;
 
-        string expectedString = "Root { Fields = Fields { RefStruct = , ValueStruct = , Memory = 0, Str = , Union = FunUnion { hi }, ScalarWithDefault = 3 }, Vectors =  } }";
+        string expectedString = "Root { Fields = Fields { RefStruct = , ValueStruct = , Memory = 0, Str = , Union = FunUnion { hi }, ScalarWithDefault = 3 }, Vectors =  }";
 
         Assert.AreEqual(expectedString, parsed.ToString());
     }
