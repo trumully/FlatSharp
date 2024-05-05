@@ -53,7 +53,10 @@ public class UnionFieldTests
     public void ToStringValidation(FlatBufferDeserializationOption option)
     {
         Root parsed = new Root { Fields = new() { Union = new FunUnion("hi") } }.SerializeAndParse(option);
-        string expectedString = "Root { Union { hi } }";
+        Fields f = parsed.Fields;
+
+        expectedString = "Root { Fields = Fields { RefStruct = , ValueStruct = , Memory = 0, Str = , Union = FunUnion { hi }, ScalarWithDefault = 3 }, Vectors =  } }";
+
         Assert.AreEqual(expectedString, parsed.ToString());
     }
 
