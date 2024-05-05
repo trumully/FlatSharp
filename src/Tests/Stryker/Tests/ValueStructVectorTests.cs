@@ -120,14 +120,16 @@ public class ValueStructVectorTests
 
 
     [TestMethod]
-    public void ToStringValidation()
+    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
+    public void ToStringValidation(FlatBufferDeserializationOption option)
     {
         Root root = new Root { Vectors = new() { ValueStruct = new List<ValueStruct> { new ValueStruct { A = 1 }, new ValueStruct { A = 2 } } } };
-        Root parsed = root.SerializeAndParse(FlatBufferDeserializationOption.Progressive, out _);
+        Root parsed = root.SerializeAndParse(option);
 
-        Assert.AreEqual("Root { ValueStruct { A = 1 }, ValueStruct { A = 2 } }", parsed.ToString());
+        var vectors = parsed.Vectors.ValueStruct;
+
+        Assert.AreEqual("ValueStruct { A = 1 }, ValueStruct { A = 2 }", vectors.ToString());
     }
-
 
     [TestMethod]
     public void ProgressiveClear()
