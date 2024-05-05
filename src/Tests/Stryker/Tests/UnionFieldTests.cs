@@ -47,6 +47,17 @@ public class UnionFieldTests
         Assert.AreEqual("hi", f.Union.Value.str);
     }
 
+
+    [TestMethod]
+    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
+    public void ToStringValidation
+    {
+        Root root = new Root { Fields = new() { Union = new FunUnion("hi") } };
+        Root parsed = root.SerializeAndParse(FlatBufferDeserializationOption.Progressive, out _);
+
+        Assert.AreEqual("Root { Union { str = hi } }", parsed.ToString());
+    }
+
     [TestMethod]
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
     public void StringMember(FlatBufferDeserializationOption option)

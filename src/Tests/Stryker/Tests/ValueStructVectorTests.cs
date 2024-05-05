@@ -118,6 +118,17 @@ public class ValueStructVectorTests
         Assert.AreEqual(10, parsed2.Vectors.ValueStruct[1].A);
     });
 
+
+    [TestMethod]
+    public void ToStringValidation()
+    {
+        Root root = new Root { Vectors = new() { ValueStruct = new List<ValueStruct> { new ValueStruct { A = 1 }, new ValueStruct { A = 2 } } } };
+        Root parsed = root.SerializeAndParse(FlatBufferDeserializationOption.Progressive, out _);
+
+        Assert.AreEqual("Root { ValueStruct { A = 1 }, ValueStruct { A = 2 } }", parsed.ToString());
+    }
+
+
     [TestMethod]
     public void ProgressiveClear()
     {
