@@ -49,8 +49,7 @@ public class UnionFieldTests
 
 
     [TestMethod]
-    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void ToStringValidation
+    public void ToStringValidation()
     {
         Root parsed = new Root { Fields = new() { Union = new FunUnion("hi") } }.SerializeAndParse(FlatBufferDeserializationOption.Progressive, out byte[] buffer);
 
