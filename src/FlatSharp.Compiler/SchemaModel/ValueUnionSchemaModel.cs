@@ -192,7 +192,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
                         writer.AppendLine($"if (this.Discriminator != {item.value.Value})");
                         using (writer.WithBlock())
                         {
-                            writer.AppendLine("throw new InvalidOperationException();");
+                            writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.InvalidOperation_UnionIsNotOfType)}();");
                         }
 
                         writer.AppendLine($"return this.UncheckedGetItem{item.value.Value}();");
@@ -232,6 +232,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
             }
 
             this.WriteAcceptMethod(writer, innerTypes);
+            this.WriteMatchMethod(writer, innerTypes);
         }
     }
 
@@ -244,7 +245,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
         writer.AppendSummaryComment("A convenience interface for implementing a visitor.");
         writer.AppendLine($"public interface Visitor<TReturn> : {visitorBaseType} {{ }}");
 
-        writer.AppendSummaryComment("Accepts a visitor into this FlatBufferUnion.");
+        writer.AppendSummaryComment("Accepts a visitor into this FlatBufferUnion. Use a value-type Visitor for maximum performance.");
         writer.AppendLine($"public TReturn Accept<TVisitor, TReturn>(TVisitor visitor)");
         writer.AppendLine($"   where TVisitor : {visitorBaseType}");
         using (writer.WithBlock())
@@ -259,7 +260,45 @@ public class ValueUnionSchemaModel : BaseSchemaModel
                     writer.AppendLine($"case {index}: return visitor.Visit(this.UncheckedGetItem{item.value.Value}());");
                 }
 
-                writer.AppendLine($"default: throw new {typeof(InvalidOperationException).GetCompilableTypeName()}(\"Unexpected discriminator: \" + disc);");
+                writer.AppendLine($"default:");
+                using (writer.IncreaseIndent())
+                {
+                    writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.InvalidOperation_InvalidUnionDiscriminator)}<{this.Name}>(disc);");
+                    writer.AppendLine("return default(TReturn);");
+                }
+            }
+        }
+    }
+
+
+    private void WriteMatchMethod(
+        CodeWriter writer,
+        List<(string resolvedType, EnumVal value, int? size)> components)
+    {
+        List<string> parameters = components.Select(x => $"Func<{x.resolvedType}, TReturn> case{x.value.Key}").ToList();
+
+        writer.AppendSummaryComment(
+            "Performs a match operation on this Union.",
+            "For cases where performance is important, prefer the Accept method to this one.");
+        writer.AppendLine($"public TReturn Match<TReturn>({string.Join(", ", parameters)})");
+        using (writer.WithBlock())
+        {
+            writer.AppendLine("var disc = this.Discriminator;");
+            writer.AppendLine("switch (disc)");
+            using (writer.WithBlock())
+            {
+                foreach (var item in components)
+                {
+                    long index = item.value.Value;
+                    writer.AppendLine($"case {index}: return case{item.value.Key}(this.UncheckedGetItem{item.value.Value}());");
+                }
+
+                writer.AppendLine($"default:");
+                using (writer.IncreaseIndent())
+                {
+                    writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.InvalidOperation_InvalidUnionDiscriminator)}<{this.Name}>(disc);");
+                    writer.AppendLine("return default(TReturn);");
+                }
             }
         }
     }
@@ -302,7 +341,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
                 writer.AppendLine("if (value is null)");
                 using (writer.WithBlock())
                 {
-                    writer.AppendLine("throw new ArgumentNullException(nameof(value));");
+                    writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.ArgumentNull)}(nameof(value));");
                 }
             }
 
@@ -315,7 +354,9 @@ public class ValueUnionSchemaModel : BaseSchemaModel
                 using (writer.WithBlock())
                 {
                     writer.AppendLine($"var localSpan = new Span<byte>(pByte, {propertyType.StructLayoutAttribute.Size});");
-                    writer.AppendLine($"System.Runtime.InteropServices.MemoryMarshal.Write(localSpan, ref value);");
+                    writer.BeginPreprocessorIf(CSharpHelpers.Net8PreprocessorVariable, "System.Runtime.InteropServices.MemoryMarshal.Write(localSpan, in value);")
+                          .Else("System.Runtime.InteropServices.MemoryMarshal.Write(localSpan, ref value);")
+                          .Flush();
                 }
             }
             else

@@ -15,6 +15,7 @@
  */
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Environments;
@@ -24,88 +25,111 @@ using FlatSharp;
 using FlatSharp.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
 namespace BenchmarkCore
 {
-    public class IterationTests
+    public class Program
     {
-        public const int Length = 1000;
-        public byte[] buffer;
+        private FooBarContainer container;
+        private byte[] buffer;
 
-        [Params(FlatBufferDeserializationOption.Lazy, FlatBufferDeserializationOption.Progressive)]
-        public FlatBufferDeserializationOption Option { get; set; }
+        private LotsOfStrings strings;
+
+        private MultiTable multi;
+
+        public static readonly int A = 3;
+        public static readonly int B = 4;
 
         [GlobalSetup]
         public void Setup()
         {
-            var outer = new Outer { RefItems = new List<RefStruct>(), ValueItems = new List<ValueStruct>(), };
-
-            for (int i = 0; i < Length; ++i)
+            this.container = new()
             {
-                outer.RefItems.Add(new RefStruct { A = i });
-                outer.ValueItems.Add(new ValueStruct { A = i });
-            }
+                Fruit = 1,
+                Initialized = true,
+                Location = "somewhere",
+                List = Enumerable.Range(0, 30).Select(x => new FooBar
+                {
+                    Name = x.ToString(),
+                    Postfix = (byte)x,
+                    Rating = x,
+                    Sibling = new Bar
+                    {
+                        Parent = new Foo
+                        {
+                            Count = 30,
+                            Id = 10,
+                            Length = 20,
+                            Prefix = 40,
+                        },
+                        Ratio = 10,
+                        Size = 10,
+                        Time = 10,
+                    }
+                }).ToList(),
+            };
 
+            this.buffer = new byte[1024 * 1024];
 
-            buffer = new byte[Outer.Serializer.GetMaxSize(outer)];
-            Outer.Serializer.Write(buffer, outer);
+            this.multi = new()
+            {
+                A = new() { Value = Guid.NewGuid().ToString() },
+                B = new() { Value = Guid.NewGuid().ToString() },
+                C = new() { Value = Guid.NewGuid().ToString() },
+                D = new() { Value = Guid.NewGuid().ToString() },
+                E = new() { Value = Guid.NewGuid().ToString() },
+                F = new() { Value = Guid.NewGuid().ToString() },
+                G = new() { Value = Guid.NewGuid().ToString() },
+                H = new() { Value = Guid.NewGuid().ToString(), Value2 = Guid.NewGuid().ToString(), Value3 = Guid.NewGuid().ToString(), },
+                I = new() { Value = Guid.NewGuid().ToString() },
+                J = new() { Value = Guid.NewGuid().ToString() },
+                K = new() { Value = Guid.NewGuid().ToString() },
+            };
+
+            this.strings = new LotsOfStrings
+            {
+                List = Enumerable.Range(0, 100).Select(x => Guid.NewGuid().ToString()).ToList()
+            };
+
+            this.Serialize();
         }
 
         [Benchmark]
-        public int RefNormalTraversal()
+        public void Serialize()
         {
-            var outer = Outer.Serializer.Parse(buffer, this.Option);
-
-            int sum = 0;
-            IList<RefStruct> items = outer.RefItems!;
-
-            for (int i = 0; i < Length; ++i)
-            {
-                var item = items[i];
-                item.A += 3;
-            }
-
-            return sum;
+            FooBarContainer.Serializer.Write(this.buffer, this.container);
         }
 
         [Benchmark]
-        public int ValueNormalTraversal()
+        public string Parse()
         {
-            var outer = Outer.Serializer.Parse(buffer, this.Option);
-
-            int sum = 0;
-            IList<ValueStruct> items = outer.ValueItems!;
-
-            if (items is null)
-            {
-                return sum;
-            }
-
-            for (int i = 0; i < Length; ++i)
-            {
-                sum += items[i].A;
-            }
-
-            return sum;
+            return FooBarContainer.Serializer.Parse(this.buffer).Location;
         }
-    }
 
-    public class Program
-    {
         public static void Main(string[] args)
         {
-            //BenchmarkRunner.Run(typeof(Program).Assembly);
-            IterationTests t = new();
+            Job job = Job.ShortRun
+                .WithAnalyzeLaunchVariance(true)
+                .WithLaunchCount(1)
+                .WithWarmupCount(5)
+                .WithIterationCount(10)
+                .WithRuntime(CoreRuntime.Core80)
+                /*.WithEnvironmentVariable(new("DOTNET_JitDisasmOnlyOptimized", "1"))
+                .WithEnvironmentVariable(new EnvironmentVariable("DOTNET_JitDisasmSummary", "1"))
+                .WithEnvironmentVariable(new EnvironmentVariable("DOTNET_JitStdOutFile", $"d:\\out.txt"))*/
+                .WithEnvironmentVariable(new EnvironmentVariable("fake", $"fake"));
 
-            t.Option = FlatBufferDeserializationOption.Lazy;
-            t.Setup();
+            var config = DefaultConfig.Instance
+                 .AddColumn(new[] { StatisticColumn.P25, StatisticColumn.P95 })
+                 .AddDiagnoser(MemoryDiagnoser.Default)
+                 .AddDiagnoser(new DisassemblyDiagnoser(new DisassemblyDiagnoserConfig()))
+                 .AddJob(job);
 
-            while (true)
-            {
-                t.RefNormalTraversal();
-            }
+            BenchmarkRunner.Run(typeof(Program).Assembly, config);
         }
     }
 }

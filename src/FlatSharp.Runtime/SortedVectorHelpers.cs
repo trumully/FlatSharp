@@ -35,6 +35,7 @@ using FlatSharp.Attributes;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices;
 
 namespace FlatSharp;
 
@@ -106,11 +107,12 @@ public static class SortedVectorHelpers
         KeyLookup<TTable, TKey>.KeyIndex = keyIndex;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void CheckKeyNotNull<TKey>(TKey key)
     {
         if (key is null)
         {
-            throw new ArgumentNullException(nameof(key));
+            FSThrow.ArgumentNull(nameof(key));
         }
     }
 
@@ -186,10 +188,21 @@ public static class SortedVectorHelpers
     {
         static KeyLookup()
         {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
             // Convention is for static constructors in the table to register key lookups. Force them to run here before fields
             // are accessed.
+            if (RuntimeFeature.IsDynamicCodeSupported) // this should be true for all cases except native AOT. This does not need to run for NativeAOT since static constructors are pre-executed.
+            {
+#pragma warning disable IL2059
+                RuntimeHelpers.RunClassConstructor(typeof(TTable).TypeHandle);
+#pragma warning restore IL2059
+            }
+#else
             RuntimeHelpers.RunClassConstructor(typeof(TTable).TypeHandle);
+#endif
         }
+
+        private static string NotInitializedErrorMessage = $"Type '{typeof(TTable).Name}' has not registered a sorted vector key of type '{typeof(TKey).Name}'.";
 
         private static Func<TTable, TKey>? getter;
         private static ushort index;
@@ -231,16 +244,8 @@ public static class SortedVectorHelpers
         {
             if (getter is null)
             {
-                ThrowNotInitialized();
+                FSThrow.InvalidOperation(NotInitializedErrorMessage);
             }
-        }
-
-        [ExcludeFromCodeCoverage]
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        [DoesNotReturn]
-        private static void ThrowNotInitialized()
-        {
-            throw new InvalidOperationException($"Type '{typeof(TTable).Name}' has not registered a sorted vector key of type '{typeof(TKey).Name}'.");
         }
     }
 
@@ -322,7 +327,7 @@ public static class SortedVectorHelpers
 
             ushort vtableLength = buffer.ReadUShort(vtableStart);
             int tableOffset = 0;
-            int keyFieldOffset = 4 + (2 * this.keyIndex);
+            int keyFieldOffset = 4 + checked(2 * this.keyIndex);
 
             if (keyFieldOffset + sizeof(ushort) <= vtableLength)
             {
@@ -331,7 +336,7 @@ public static class SortedVectorHelpers
 
             if (tableOffset == 0)
             {
-                throw new InvalidOperationException("Sorted FlatBuffer vectors may not have null-valued keys.");
+                return FSThrow.InvalidOperation<ReadOnlyMemory<byte>>("Sorted FlatBuffer vectors may not have null-valued keys.");
             }
 
             offset += tableOffset;

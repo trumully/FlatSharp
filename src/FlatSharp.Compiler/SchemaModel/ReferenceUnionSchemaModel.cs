@@ -107,6 +107,7 @@ public class ReferenceUnionSchemaModel : BaseSchemaModel
             this.WriteDefaultConstructor(writer);
             this.WriteReturnToPool(writer);
             this.WriteAcceptMethod(writer, innerTypes);
+            this.WriteMatchMethod(writer, innerTypes);
         }
     }
 
@@ -125,7 +126,7 @@ public class ReferenceUnionSchemaModel : BaseSchemaModel
                 writer.AppendLine($"if (this.Discriminator != {value.Value})");
                 using (writer.WithBlock())
                 {
-                    writer.AppendLine("throw new InvalidOperationException();");
+                    writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.InvalidOperation_UnionIsNotOfType)}();");
                 }
 
                 writer.AppendLine($"return this.value_{value.Value}!;");
@@ -189,8 +190,44 @@ public class ReferenceUnionSchemaModel : BaseSchemaModel
                     long index = item.value.Value;
                     writer.AppendLine($"case {index}: return visitor.Visit(this.value_{item.value.Value});");
                 }
+                writer.AppendLine($"default:");
+                using (writer.IncreaseIndent())
+                {
+                    writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.InvalidOperation_InvalidUnionDiscriminator)}<{this.Name}>(disc);");
+                    writer.AppendLine("return default(TReturn);");
+                }
+            }
+        }
+    }
 
-                writer.AppendLine($"default: throw new {typeof(InvalidOperationException).GetCompilableTypeName()}(\"Unexpected discriminator: \" + disc);");
+    private void WriteMatchMethod(
+        CodeWriter writer,
+        List<(string resolvedType, EnumVal value, Type? propertyType)> components)
+    {
+        List<string> parameters = components.Select(x => $"Func<{x.resolvedType}, TReturn> case{x.value.Key}").ToList();
+
+        writer.AppendSummaryComment(
+            "Performs a match operation on this Union.",
+            "For cases where performance is important, prefer the Accept method to this one.");
+        writer.AppendLine($"public TReturn Match<TReturn>({string.Join(", ", parameters)})");
+        using (writer.WithBlock())
+        {
+            writer.AppendLine("var disc = this.Discriminator;");
+            writer.AppendLine("switch (disc)");
+            using (writer.WithBlock())
+            {
+                foreach (var item in components)
+                {
+                    long index = item.value.Value;
+                    writer.AppendLine($"case {index}: return case{item.value.Key}(this.value_{item.value.Value});");
+                }
+
+                writer.AppendLine($"default:");
+                using (writer.IncreaseIndent())
+                {
+                    writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.InvalidOperation_InvalidUnionDiscriminator)}<{this.Name}>(disc);");
+                    writer.AppendLine("return default(TReturn);");
+                }
             }
         }
     }
@@ -205,7 +242,7 @@ public class ReferenceUnionSchemaModel : BaseSchemaModel
                 writer.AppendLine("if (value is null)");
                 using (writer.WithBlock())
                 {
-                    writer.AppendLine("throw new ArgumentNullException(nameof(value));");
+                    writer.AppendLine($"{typeof(FSThrow).GGCTN()}.{nameof(FSThrow.ArgumentNull)}(nameof(value));");
                 }
             }
 

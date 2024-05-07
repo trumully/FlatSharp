@@ -9,21 +9,66 @@ attribute "fs_unsafeExternal";
 attribute "fs_memoryMarshal";
 attribute "fs_vector";
 attribute "fs_writeThrough";
+attribute "fs_sharedString";
 
 namespace BenchmarkCore;
 
-struct ValueStruct (fs_valueStruct)
-{
-    a : int;
+struct Foo {
+  id:ulong;
+  count:short;
+  prefix:byte;
+  length:uint;
 }
 
-struct RefStruct
-{
-    a : int (fs_writeThrough);
+struct Bar {
+  parent:Foo;
+  time:int;
+  ratio:float;
+  size:ushort;
 }
 
-table Outer (fs_serializer:"Lazy")
-{
-    value_items : [ ValueStruct ];
-    ref_items : [ RefStruct ];
+table FooBar {
+  sibling:Bar;
+  name:string;
+  rating:double;
+  postfix:ubyte;
 }
+
+table FooBarContainer (fs_serializer) {
+  list:[FooBar];  // 3 copies of the above
+  initialized:bool;
+  fruit:short;
+  location:string;
+}
+
+table LotsOfStrings (fs_serializer) {
+  list : [ string ];
+}
+
+table MultiTable (fs_serializer)
+{
+    A : A;
+    B : B;
+    C : C;
+    D : D;
+    E : E;
+    F : F;
+    G : G;
+    H : H;
+    I : I;
+    J : J;
+    K : K;
+}
+
+table A { Value : string; }
+table B { Value : string; }
+table C { Value : string; }
+table D { Value : string; }
+table E { Value : string; }
+table F { Value : string; }
+table G { Value : string; }
+table H { Value : string; Value2 : string; Value3 : string; }
+table I { Value : string; }
+table J { Value : string; }
+table K { Value : string; }
+

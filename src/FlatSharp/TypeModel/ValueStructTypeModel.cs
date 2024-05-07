@@ -115,7 +115,7 @@ public class ValueStructTypeModel : RuntimeTypeModel
             var member = this.members[i];
             var offsetAdjustment = member.offset != 0 ? $" + {member.offset}" : string.Empty;
 
-            var parts = context.MethodNameResolver.ResolveParse(context.Options.DeserializationOption, member.model);
+            var parts = DefaultMethodNameResolver.ResolveParse(context.Options.DeserializationOption, member.model);
 
             propertyStatements.Add($@"
                 item.{member.accessor} = {parts.@namespace}.{parts.className}.{parts.methodName}<{context.InputBufferTypeName}>(
@@ -186,7 +186,11 @@ public class ValueStructTypeModel : RuntimeTypeModel
                 {StrykerSuppressor.SuppressNextLine("boolean")}
                 if ({StrykerSuppressor.BitConverterTypeName}.IsLittleEndian)
                 {{
+#if {CSharpHelpers.Net8PreprocessorVariable}
+                    {typeof(MemoryMarshal).GetGlobalCompilableTypeName()}.Write(sizedSpan, in {context.ValueVariableName});
+#else
                     {typeof(MemoryMarshal).GetGlobalCompilableTypeName()}.Write(sizedSpan, ref {context.ValueVariableName});
+#endif
                 }}
                 else
                 {{
@@ -211,7 +215,12 @@ public class ValueStructTypeModel : RuntimeTypeModel
             FlatSharpInternal.AssertLittleEndian();
             FlatSharpInternal.AssertSizeOf<{globalName}>({this.inlineSize});
             Span<byte> sizedSpan = {context.SpanVariableName}.Slice({context.OffsetVariableName}, {this.inlineSize});
+
+#if NET8_0_OR_GREATER
+            {typeof(MemoryMarshal).GetGlobalCompilableTypeName()}.Write(sizedSpan, in {context.ValueVariableName});
+#else
             {typeof(MemoryMarshal).GetGlobalCompilableTypeName()}.Write(sizedSpan, ref {context.ValueVariableName});
+#endif
         ";
 
         return new CodeGeneratedMethod(body) { IsMethodInline = true };
@@ -346,7 +355,7 @@ public class ValueStructTypeModel : RuntimeTypeModel
         return (int)value;
     }
 
-    public override string GetDeserializedTypeName(IMethodNameResolver nameResolver, FlatBufferDeserializationOption option, string inputBufferTypeName)
+    public override string GetDeserializedTypeName(FlatBufferDeserializationOption option, string inputBufferTypeName)
     {
         return this.GetGlobalCompilableTypeName();
     }

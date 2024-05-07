@@ -522,19 +522,25 @@ $@"
         TableMemberModel memberModel,
         SerializationCodeGenContext context)
     {
-        string condition = $"if ({memberModel.ItemTypeModel.GetNotEqualToDefaultValueLiteralExpression(valueVariableName, memberModel.DefaultValueLiteral)})";
+        string? comparison = memberModel.ItemTypeModel.TryGetNotEqualToDefaultValueLiteralExpression(valueVariableName, memberModel.DefaultValueLiteral);
+        string condition = string.Empty;
         string elseBlock = string.Empty;
+
+        if (!string.IsNullOrEmpty(comparison))
+        {
+            condition = $"if ({comparison})";
+        }
 
         if (memberModel.ForceWrite)
         {
             condition = string.Empty;
         }
-        else if (memberModel.IsRequired)
+        else if (memberModel.IsRequired && !string.IsNullOrEmpty(condition))
         {
             elseBlock =
             $@"else
             {{
-                throw new {typeof(InvalidOperationException).GetCompilableTypeName()}(""Table property '{memberModel.FriendlyName}' is marked as required, but was not set."");
+                {typeof(FSThrow).GGCTN()}.{nameof(FSThrow.InvalidOperation_RequiredPropertyNotSet)}(""{memberModel.FriendlyName}"");
             }}
             ";
         }
@@ -718,9 +724,16 @@ $@"
                 TableFieldContextVariableName = $"{this.MetadataClassName}.{member.PropertyInfo.Name}",
             };
 
+            string condition = string.Empty;
+            string? comparison = itemModel.TryGetNotEqualToDefaultValueLiteralExpression(variableName, member.DefaultValueLiteral);
+            if (!string.IsNullOrEmpty(comparison))
+            {
+                condition = $"if ({comparison})";
+            }
+
             string statement =
 $@" 
-                if ({itemModel.GetNotEqualToDefaultValueLiteralExpression(variableName, member.DefaultValueLiteral)})
+                {condition}
                 {{
                     runningSum += {itemContext.GetMaxSizeInvocation(itemModel.ClrType)};
                 }}";
@@ -775,9 +788,9 @@ $@"
         return tableMember != null;
     }
 
-    public override string GetDeserializedTypeName(IMethodNameResolver nameResolver, FlatBufferDeserializationOption option, string inputBufferTypeName)
+    public override string GetDeserializedTypeName(FlatBufferDeserializationOption option, string inputBufferTypeName)
     {
-        var (ns, name) = nameResolver.ResolveHelperClassName(this);
+        var (ns, name) = DefaultMethodNameResolver.ResolveHelperClassName(this);
         return $"{ns}.{name}.{this.GetTableReaderClassName(option)}<{inputBufferTypeName}>";
     }
 
