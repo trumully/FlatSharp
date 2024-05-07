@@ -95,9 +95,7 @@ public class UnionTests
         string schema = $@"
             {MetadataHelpers.AllAttributes}
             namespace UnionTests;
-            struct ValueStructA (fs_valueStruct) {{ x : int; }}
-            struct ValueStructB (fs_valueStruct) {{ x: int; }}
-            union MyUnion (fs_unsafeUnion) {{ ValueStructA, ValueStructB }}
+            union MyUnion {{ a : string, b : int }}
         ";
 
         (Assembly asm, string csharp) = FlatSharpCompiler.CompileAndLoadAssemblyWithCode(
