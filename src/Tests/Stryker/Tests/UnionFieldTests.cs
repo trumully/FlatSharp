@@ -267,7 +267,7 @@ public class UnionFieldTests
         Root parsed = new Root { Fields = new() { Union = new FunUnion("hi") } }.SerializeAndParse(FlatBufferDeserializationOption.Progressive, out byte[] buffer);
 
         string expectedString = "Root { Fields = { Union = \"hi\" } }";
-        Assert.AreEqual(expectedString, parsed.ToString());
+        Assert.AreEqual(expectedString, parsed.Fields.Union.ToString());
     }
 
     private Root CreateRoot_UnionNotPresent(out byte[] expectedData)
