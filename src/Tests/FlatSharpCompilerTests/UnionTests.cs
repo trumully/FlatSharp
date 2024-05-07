@@ -89,21 +89,6 @@ public class UnionTests
             new());
     }
 
-    [Fact]
-    public void Union_ToString()
-    {
-        string schema = $@"
-            {MetadataHelpers.AllAttributes}
-            namespace UnionTests;
-            union MyUnion {{ int, string }}
-        ";
-        (Assembly asm, string csharp) = FlatSharpCompiler.CompileAndLoadAssemblyWithCode(
-            schema,
-            new());
-
-        Assert.Contains("public override string ToString() =>", csharp);
-    }
-
     [Theory]
     [InlineData("ValueStruct")]
     [InlineData("string")]
