@@ -95,9 +95,8 @@ public class UnionTests
         string schema = $@"
             {MetadataHelpers.AllAttributes}
             namespace UnionTests;
-            union MyUnion {{ a : string, b : int }}
+            union MyUnion {{ int, string }}
         ";
-
         (Assembly asm, string csharp) = FlatSharpCompiler.CompileAndLoadAssemblyWithCode(
             schema,
             new());
