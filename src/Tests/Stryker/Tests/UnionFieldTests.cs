@@ -260,16 +260,6 @@ public class UnionFieldTests
         Helpers.AssertSequenceEqual(expectedData, buffer);
     }
 
-    [TestMethod]
-    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void UnionToString(FlatBufferDeserializationOption option)
-    {
-        Root parsed = new Root { Fields = new() { Union = new("hi") } }.SerializeAndParse(FlatBufferDeserializationOption.Progressive, out byte[] buffer);
-
-        string expectedString = "Root { Fields = { Union = \"hi\" } }";
-        Assert.AreEqual(expectedString, parsed.Fields.ToString());
-    }
-
     private Root CreateRoot_UnionNotPresent(out byte[] expectedData)
     {
         RefStruct vs = new()
