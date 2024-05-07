@@ -86,8 +86,7 @@ public abstract class BaseReferenceTypeSchemaModel : BaseSchemaModel
                 writer.AppendLine("this.OnInitialized(context);");
             }
 
-            var orderedProperties = this.properties.OrderBy(x => x.Key);
-            foreach (var property in orderedProperties)
+            foreach (var property in this.properties.OrderBy(x => x.Key))
             {
                 int index = property.Key;
                 PropertyFieldModel model = property.Value;
@@ -100,11 +99,6 @@ public abstract class BaseReferenceTypeSchemaModel : BaseSchemaModel
             {
                 sv.WriteCode(writer, context);
             }
-
-            // This matches C# records
-            string fieldStrings = string.Join(", ", orderedProperties.Select(p => p.Value.FieldName).Select(n => $"{n} = {{this.{n}}}"));
-            string fieldStringsWithSpace = this.properties.Count == 0 ? " " : $" {fieldStrings} ";
-            writer.AppendLine($"public override string ToString() => $\"{this.Name} {{{{{fieldStringsWithSpace}}}}}\";");
 
             this.EmitExtraData(writer, context);
         }
