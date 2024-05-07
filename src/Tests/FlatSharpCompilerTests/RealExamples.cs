@@ -131,10 +131,6 @@ table TableThatStartsItAll {{
         var parsedMonster = monsterSerializer.Parse(data);
         Assert.NotEqual(parsedMonster.GetType(), monster.GetType());
 
-        string expectedString = "test";
-
-        Assert.Equal(expectedString, parsedMonster.GetType().ToString());
-
         var copiedMonster = Activator.CreateInstance(monsterType, new[] { parsedMonster });
         Assert.Equal(copiedMonster.GetType(), monster.GetType());
     }
