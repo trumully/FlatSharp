@@ -159,7 +159,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
             writer.AppendLine();
             writer.AppendLine("public byte Discriminator { get; }");
 
-            writer.AppendLine($"public override string ToString() => $\"{this.Name} filler\";");
+            // writer.AppendLine($"public override string ToString() => $\"{this.Name} filler\";");
 
             foreach (var item in innerTypes)
             {
