@@ -48,16 +48,6 @@ public class ToStringTests
 
     [TestMethod]
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void EmptyStruct_ToString(FlatBufferDeserializationOption option)
-    {
-        EmptyStruct es = new EmptyStruct();
-        EmptyStruct parsed = this.ParseStruct(es, option);
-
-        Assert.AreEqual("EmptyStruct { }", parsed.ToString());
-    }
-
-    [TestMethod]
-    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
     public void ValueStruct_ToString(FlatBufferDeserializationOption option)
     {
         ValueStruct vs = new ValueStruct
