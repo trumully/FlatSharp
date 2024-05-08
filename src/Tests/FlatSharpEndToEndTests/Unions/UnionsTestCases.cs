@@ -54,15 +54,6 @@ public class UnionsTestCases
         }
     }
 
-    [TestMethod]
-    public void Union_ToString()
-    {
-        var c = this.Setup();
-
-        Assert.AreEqual("MyUnion { A { X = 1 } }", c.Value[0].ToString());
-
-    }
-
 #if NET6_0_OR_GREATER
     /// <summary>
     /// In this test, the FBS file lies about the size of <see cref="System.Numerics.Vector{T}"/>. Depending on the machine,

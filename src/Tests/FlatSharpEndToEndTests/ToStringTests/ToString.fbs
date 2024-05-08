@@ -1,0 +1,43 @@
+attribute "fs_serializer";
+
+namespace FlatSharpEndToEndTests.ToStringTests;
+
+table Table (fs_serializer) 
+{
+    A : int;
+    B : int;
+    C : int;
+    D : int;
+}
+
+table EmptyTable (fs_serializer) 
+{
+}
+
+struct SomeStruct (fs_serializer)
+{
+    A : int;
+    B : int;
+    C : int;
+    D : int;
+}
+
+struct EmptyStruct (fs_serializer)
+{
+}
+
+struct ValueStruct (fs_valueStruct)
+{
+    X : int;
+    Y : int;
+    Z : int;
+}
+
+
+union MyUnion { A, B, C, D }
+union EmptyUnion { }
+
+table Container (fs_serializer) {
+    Value : [MyUnion];
+    Empty : [EmptyUnion]
+}
