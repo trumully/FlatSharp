@@ -82,7 +82,7 @@ public class ValueStructTestCases
     [TestMethod]
     public void Vector_ToString()
     {
-        WriteThroughTable t = new WritheThroughTable
+        WriteThroughTable t = new WriteThroughTable
         {
             Point = new Vec3 { X = 1, Y = 2, Z = 3 }
         };
