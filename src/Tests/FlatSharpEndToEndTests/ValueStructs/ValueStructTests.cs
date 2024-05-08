@@ -80,6 +80,21 @@ public class ValueStructTestCases
     }
 
     [TestMethod]
+    public void Vector_ToString()
+    {
+        WriteThroughTable t = new WritheThroughTable
+        {
+            Point = new Vec3 { X = 1, Y = 2, Z = 3 }
+        };
+
+        byte[] data = new byte[1024];
+        WriteThroughTable.Serializer.Write(data, t);
+
+        var parsed = WriteThroughTable.Serializer.Parse(data);
+        Assert.AreEqual("WriteThroughTable { Point = Vec3 { X = 1, Y = 2, Z = 3 }, Points = null }", parsed.ToString());
+    }
+
+    [TestMethod]
     public void ExtensionMethod_WorksForVectors()
     {
         ValueStruct v = default;

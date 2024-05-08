@@ -130,7 +130,7 @@ public class ValueStructTests
             schema,
             new());
 
-        Assert.Contains("public override string ToString() => $\"StructA {{ __flatsharp__Test_0 = {this.__flatsharp__Test_0}, __flatsharp__Test_1 = {this.__flatsharp__Test_1}, __flatsharp__Test_2 = {this.__flatsharp__Test_2}, __flatsharp__Test_3 = {this.__flatsharp__Test_3}, __flatsharp__Test_4 = {this.__flatsharp__Test_4} }}\";", csharp);
+        Assert.Contains("""public override string ToString() => $"StructA {{ __flatsharp__Test_0 = {this.__flatsharp__Test_0}, __flatsharp__Test_1 = {this.__flatsharp__Test_1}, __flatsharp__Test_2 = {this.__flatsharp__Test_2}, __flatsharp__Test_3 = {this.__flatsharp__Test_3}, __flatsharp__Test_4 = {this.__flatsharp__Test_4} }}";""", csharp);
     }
 
     [Theory]

@@ -96,7 +96,7 @@ public class UnionTests
             {MetadataHelpers.AllAttributes}
             namespace UnionTests;
             struct ValueStructA (fs_valueStruct) {{ x : int; }}
-            struct ValueStructB (fs_valueStruct) {{ x: int; }}
+            struct ValueStructB (fs_valueStruct) {{ x : int; }}
             union MyUnion (fs_unsafeUnion) {{ ValueStructA, ValueStructB }}
         ";
 
@@ -104,7 +104,7 @@ public class UnionTests
             schema,
             new());
 
-        Assert.Contains("public override string ToString() => $\"MyUnion {{ ValueStructA, ValueStructB }}\";", csharp);
+        Assert.Contains("""public override string ToString() => $"MyUnion {{ ValueStructA, ValueStructB }}";""", csharp);
     }
 
     [Theory]
