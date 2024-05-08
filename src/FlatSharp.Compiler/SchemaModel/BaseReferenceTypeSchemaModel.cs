@@ -102,9 +102,9 @@ public abstract class BaseReferenceTypeSchemaModel : BaseSchemaModel
             }
 
             // This matches C# records
-            string fieldStrings = string.Join(", ", orderedProperties.Select(p => p.Value.FieldName).Select(n => $"{n} = {{this.{n}}}"));
-            string fieldStringsWithSpace = this.properties.Count == 0 ? " " : $" {fieldStrings} ";
-            writer.AppendLine($"public override string ToString() => $\"{this.Name} {{{{{fieldStringsWithSpace}}}}}\";");
+            // string fieldStrings = string.Join(", ", orderedProperties.Select(p => p.Value.FieldName).Select(n => $"{n} = {{this.{n}}}"));
+            // string fieldStringsWithSpace = this.properties.Count == 0 ? " " : $" {fieldStrings} ";
+            // writer.AppendLine($"public override string ToString() => $\"{this.Name} {{{{{fieldStringsWithSpace}}}}}\";");
 
             this.EmitExtraData(writer, context);
         }
