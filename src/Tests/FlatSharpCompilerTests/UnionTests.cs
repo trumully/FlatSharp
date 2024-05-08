@@ -104,7 +104,7 @@ public class UnionTests
             schema,
             new());
 
-        Assert.Contains($"public override string ToString() => $\"MyUnion {{{{ ValueStructA, ValueStructB }}}}\";", csharp);
+        Assert.Contains("public override string ToString() => $\"MyUnion {{ ValueStructA, ValueStructB }}\";", csharp);
     }
 
     [Theory]
