@@ -161,7 +161,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
 
             string itemStrings = string.Join(", ", innerTypes.Select(x => $"{x.resolvedType} {x.value.Key}"));
             string itemStringsWithSpace = this.union.Values.Count == 0 ? " " : $" {itemStrings} ";
-            writer.AppendLine($"public override string ToString() => $\"{this.Name} {{{{{itemStringsWithSpaces}}}}}\";");
+            writer.AppendLine($"public override string ToString() => $\"{this.Name} {{{{{itemStringsWithSpace}}}}}\";");
 
             foreach (var item in innerTypes)
             {
