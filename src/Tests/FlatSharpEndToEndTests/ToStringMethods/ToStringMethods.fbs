@@ -1,49 +1,43 @@
 // Declare FlatSharp attributes.
 
-attribute "fs_vector";
 attribute "fs_serializer";
 attribute "fs_valueStruct";
 
 namespace FlatSharpEndToEndTests.ToStringMethods;
 
-enum Color : byte
-{
-    Red = 0,
-    Green = 1,
-    Blue = 2,
+
+table MyTable (fs_serializer) {
+    FieldA: string;
+    FieldB: int;
 }
 
-struct Vec3 (fs_valueStruct) // fs_valueStruct tells FlatSharp to generate a C# struct (value type) instead of a class
-{
-    x : float;
-    y : float;
-    z : float;
+table MyEmptyTable (fs_serializer) {
 }
 
-table Weapon (fs_serializer)
-{
-    name : string;
-    damage : short;
+struct MyStruct {
+    FieldA: int;
+    FieldB: int;
 }
 
-union Equipped
-{
-    Weapon,
-    Item : string
+
+struct MyValueStruct (fs_valueStruct) {
+    FieldX: float;
+    FieldY: float;
 }
 
-table Monster (fs_serializer) // Tell FlatSharp to generate a serializer for this type.
-{
-    color : Color;
-    pos : Vec3;
-    mana : short = 150;
-    HP : short = 100;
-    name : string;
-    friendly : bool = false (deprecated);
-    inventory : [ ubyte ] (fs_vector:"Memory");
-    weapons : [ Weapon ];
-    equipped : Equipped;
-    path : [ Vec3 ];
-    mana_regen_rate : double;
-    secondary_color : Color;
+table MyStructs (fs_serializer) {
+    FieldA: MyStruct;
+    FieldB: MyValueStruct;
+}
+
+
+struct ValueA { Value: uint; }
+
+union MyUnion {
+    Member1: ValueA,
+    Member2: string
+}
+
+table MyUninons (fs_serializer) {
+    FieldA: MyUnion;
 }

@@ -7,34 +7,80 @@ class ToStringTests
 {
     [TestMethod]
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void Monster_ToString(FlatBufferDeserializationOption option)
+    public void Table_ToString(FlatBufferDeserializationOption option)
     {
-        Monster monster = new Monster
-        {
-            Color = Color.Green,
-            Equipped = new Equipped(new Weapon { Damage = 100, Name = "Master sword" }, Item = "Boomerang"),
-            Friendly = true,
-            HP = 932,
-            Inventory = new byte[] { 1, 2, 3, 4, 5, },
-            Mana = 32,
-            Name = "Link",
-            Pos = new Vec3 { X = 1.1f, Y = 3.2f, Z = 2.6f },
-            Weapons = new List<Weapon> { new Weapon { Damage = 6, Name = "Hook shot" }, new Weapon { Name = "Bow and Arrow", Damage = 37 } },
-            Path = new Vec3[]
+        MyTable myTable = new MyTable {
+            FieldA = "hello",
+            FieldB = 123,
+        };
+        int maxBytesNeeded = MyTable.Serializer.GetMaxSize(myTable);
+        byte[] buffer = new byte[maxBytesNeeded];
+        int bytesWritten = MyTable.Serializer.Write(buffer, myTable);
+
+        MyTable deserializedTable = MyTable.Serializer.Parse(buffer, option);
+
+        Assert.AreEqual("MyTable { FieldA = hello, FieldB = 123 }", deserializedTable.ToString());
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
+    public void EmptyTable_ToString(FlatBufferDeserializationOption option)
+    {
+        MyEmptyTable myEmptyTable = new MyEmptyTable();
+        int maxBytesNeeded = MyEmptyTable.Serializer.GetMaxSize(myEmptyTable);
+        byte[] buffer = new byte[maxBytesNeeded];
+        int bytesWritten = MyEmptyTable.Serializer.Write(buffer, myEmptyTable);
+
+        MyEmptyTable deserializedTable = MyEmptyTable.Serializer.Parse(buffer, option);
+
+        Assert.AreEqual("MyEmptyTable { }", deserializedTable.ToString());
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
+    public void Struct_ToString(FlatBufferDeserializationOption option)
+    {
+        MyStructs myStructs = new MyStructs {
+            MyStruct = new MyStruct {
+                FieldA = 456,
+                FieldB = 123,
+            },
+            MyEmptyStruct = new MyEmptyStruct();
+            MyValueStruct = new MyValueStruct {
+                FieldX = 2f,
+                FieldY = 3f,
+            },
+        };
+
+        int maxBytesNeeded = MyStructs.Serializer.GetMaxSize(myStructs);
+        byte[] buffer = new byte[maxBytesNeeded];
+        int bytesWritten = MyStructs.Serializer.Write(buffer, myStructs);
+
+        MyStructs deserializedStructs = MyStructs.Serializer.Parse(buffer, option);
+
+        Assert.AreEqual("MyStructs { MyStruct = MyStruct { FieldA = 456, FieldB = 123 }, MyEmptyStruct = MyEmptyStruct { }, MyValueStruct = MyValueStruct { FieldX = 2, FieldY = 3 } }", deserializedStructs.ToString());
+    }
+
+    [TestMethod]
+    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
+    public void Union_ToString(FlatBufferDeserializationOption option)
+    {
+        MyUnions myUnions = new MyUnions {
+            FieldA = new MyUnion[]
             {
-                new Vec3 { X = 1f, Y = 2f, Z = 3f },
-                new Vec3 { X = 4f, Y = 5f, Z = 6f },
-                new Vec3 { X = 7f, Y = 8f, Z = 9f }
+                Member1 = new ValueA {
+                    Value = 2,
+                },
+                Member2 = "hello",
             }
         };
 
-        int maxSize = Monster.Serializer.GetMaxSize(monster);
+        int maxBytesNeeded = MyUnions.Serializer.GetMaxSize(myUnions);
+        byte[] buffer = new byte[maxBytesNeeded];
+        int bytesWritten = MyUnions.Serializer.Write(buffer, myUnions);
 
-        byte[] buffer = new byte[maxSize];
-        int bytesWritten = Monster.Serializer.Write(buffer, monster);
+        MyUnions deserializedUnions = MyUnions.Serializer.Parse(buffer, option);
 
-        Monster parsedMonster = Monster.Serializer.Parse(buffer, option);
-
-        Assert.AreEqual("Monster { Color = Green, Equipped = Equipped { Weapon = Weapon { Name = Master sword, Damage = 100 }, Item = Boomerang }, Friendly = True, HP = 932, Inventory = [1, 2, 3, 4, 5], Mana = 32, Name = Link, Pos = Vec3 { X = 1.1, Y = 3.2, Z = 2.6 }, Weapons = [Weapon { Name = Hook shot, Damage = 6 }, Weapon { Name = Bow and Arrow, Damage = 37 }], Path = [Vec3 { X = 1, Y = 2, Z = 3 }, Vec3 { X = 4, Y = 5, Z = 6 }, Vec3 { X = 7, Y = 8, Z = 9 }] }", parsedMonster.ToString());
+        Assert.AreEqual("MyUnions { FieldA = [MyUnion { Member1 = ValueA { Value = 2 } }, MyUnion { Member2 = hello }] }", deserializedUnions.ToString());
     }
 }
