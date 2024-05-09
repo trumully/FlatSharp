@@ -1,40 +1,40 @@
 attribute "fs_serializer";
 attribute "fs_valueStruct";
+attribute "fs_writeThrough";
 
-namespace FlatSharpEndToEndTests.ToStringTests;
+namespace FlatSharpEndToEndTests.ToString
 
-table Table (fs_serializer) 
+table RootTable (fs_serializer)
 {
-    A : int;
-    B : int;
-    C : int;
-    D : int;
+    Table : Person;
+    EmptyTable : Empty;
+    Struct : A;
+    ValueStruct : ValueStruct;
+    Union : [MyUnion];
+    EmptyUnion : [EmptyUnion];
 }
 
-table EmptyTable (fs_serializer)
+table Person (fs_serializer)
+{
+    Name : string;
+    Age : uint;
+}
+
+table Empty (fs_serializer)
 {
 }
 
-struct SomeStruct (fs_serializer)
-{
-    A : int;
-    B : int;
-    C : int;
-    D : int;
-}
-
-struct ValueStruct (fs_valueStruct)
-{
-    X : int;
-    Y : int;
-    Z : int;
-}
-
+struct A { V : uint; }
+struct B { V : uint; }
+struct C { V : uint; }
+struct D { V : uint; }
 
 union MyUnion { A, B, C, D }
 union EmptyUnion { }
 
-table Container (fs_serializer) {
-    Value : [MyUnion];
-    Empty : [EmptyUnion];
+struct Vec3 (fs_valueStruct)
+{
+    X : float;
+    Y : float;
+    Z : float;
 }
