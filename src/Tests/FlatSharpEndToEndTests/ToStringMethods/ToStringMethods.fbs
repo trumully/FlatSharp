@@ -14,7 +14,7 @@ table TableEmpty (fs_serializer)
 {
 }
 
-struct RegularStruct (fs_serializer)
+struct RegularStruct
 {
     X : int;
     Y : int;
