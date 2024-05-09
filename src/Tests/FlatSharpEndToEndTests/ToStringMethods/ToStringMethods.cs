@@ -1,6 +1,6 @@
 using FlatSharp.Internal;
 
-namespace FlatSharpEndToEndTests.ToString;
+namespace FlatSharpEndToEndTests.ToStringMethods;
 
 [TestClass]
 class ToStringTests
