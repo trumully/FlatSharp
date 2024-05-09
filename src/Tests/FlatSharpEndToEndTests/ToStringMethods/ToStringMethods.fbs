@@ -6,7 +6,7 @@ attribute "fs_valueStruct";
 
 namespace FlatSharpEndToEndTests.ToStringMethods;
 
-enum Color : byte (fs_serializer)
+enum Color : byte
 {
     Red = 0,
     Green = 1,
@@ -26,7 +26,7 @@ table Weapon (fs_serializer)
     damage : short;
 }
 
-union Equipped (fs_serializer)
+union Equipped
 {
     Weapon,
     Item : string
