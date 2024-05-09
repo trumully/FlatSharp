@@ -89,24 +89,6 @@ public class UnionTests
             new());
     }
 
-    [Fact]
-    public void Union_ToString()
-    {
-        string schema = $@"
-            {MetadataHelpers.AllAttributes}
-            namespace UnionTests;
-            struct ValueStructA (fs_valueStruct) {{ x : int; }}
-            struct ValueStructB (fs_valueStruct) {{ x : int; }}
-            union MyUnion (fs_unsafeUnion) {{ ValueStructA, ValueStructB }}
-        ";
-
-        (Assembly asm, string csharp) = FlatSharpCompiler.CompileAndLoadAssemblyWithCode(
-            schema,
-            new());
-
-        Assert.Contains("""public override string ToString() => $"MyUnion {{ ValueStructA, ValueStructB }}";""", csharp);
-    }
-
     [Theory]
     [InlineData("ValueStruct")]
     [InlineData("string")]

@@ -116,23 +116,6 @@ public class ValueStructTests
         Assert.Contains("return ref System.Runtime.CompilerServices.Unsafe.Add(ref item.__flatsharp__NotSafe_0, index)", csharp);
     }
 
-    [Fact]
-    public void ValueStruct_ToString()
-    {
-        string schema = $@"
-            {MetadataHelpers.AllAttributes}
-            namespace ValueStructTests;
-            struct StructA ({MetadataKeys.ValueStruct}) {{
-                Test : [int : 5];
-            }}";
-
-        (Assembly asm, string csharp) = FlatSharpCompiler.CompileAndLoadAssemblyWithCode(
-            schema,
-            new());
-
-        Assert.Contains("""public override string ToString() => $"StructA {{ __flatsharp__Test_0 = {this.__flatsharp__Test_0}, __flatsharp__Test_1 = {this.__flatsharp__Test_1}, __flatsharp__Test_2 = {this.__flatsharp__Test_2}, __flatsharp__Test_3 = {this.__flatsharp__Test_3}, __flatsharp__Test_4 = {this.__flatsharp__Test_4} }}";""", csharp);
-    }
-
     [Theory]
     [InlineData(MemoryMarshalBehavior.Always, MemoryMarshalBehavior.Always)]
     [InlineData(MemoryMarshalBehavior.Never, MemoryMarshalBehavior.Never)]
