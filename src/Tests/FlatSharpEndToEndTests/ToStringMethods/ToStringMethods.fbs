@@ -1,0 +1,38 @@
+attribute "fs_serializer";
+attribute "fs_valueStruct";
+
+namespace FlatSharpEndToEndTests.ToStringMethods;
+
+table TableValues (fs_serializer)
+{
+    A : int;
+    B : int;
+    C : int;
+}
+
+table TableEmpty (fs_serializer)
+{
+}
+
+struct RegularStruct (fs_serializer)
+{
+    X : int;
+    Y : int;
+    Z : int;
+}
+
+struct ValueStruct (fs_valueStruct)
+{
+    X : int;
+    Y : int;
+    Z : int;
+}
+
+
+union UnionValues { Doggo : Dog, Cat, Fish, someString: string }
+
+table Dog { Breed:string; Age:int; }
+table Cat { Breed:string; Age:int; }
+table Fish { Breed:string; Weight:float64; Age:int; }
+
+union EmptyValues { }
