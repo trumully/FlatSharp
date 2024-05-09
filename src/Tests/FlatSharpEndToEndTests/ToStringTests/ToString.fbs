@@ -11,7 +11,7 @@ table Table (fs_serializer)
     D : int;
 }
 
-table EmptyTable (fs_serializer) 
+table EmptyTable (fs_serializer)
 {
 }
 
@@ -36,5 +36,5 @@ union EmptyUnion { }
 
 table Container (fs_serializer) {
     Value : [MyUnion];
-    Empty : [EmptyUnion]
+    Empty : [EmptyUnion];
 }
