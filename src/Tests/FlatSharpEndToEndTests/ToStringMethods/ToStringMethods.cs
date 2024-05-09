@@ -72,14 +72,11 @@ class ToStringTests
         {
             FieldA = new MyUnion[]
             {
-                new MyUnion
-                (
-                    MemberA = new ValueA 
-                    {
-                        Value = 2
-                    },
-                    MemberB = "hello"
-                )
+                MemberA = new ValueA 
+                {
+                    Value = 2
+                },
+                MemberB = "hello"
             }
         };
 
