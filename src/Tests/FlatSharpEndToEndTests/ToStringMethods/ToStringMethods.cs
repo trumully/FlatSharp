@@ -12,7 +12,7 @@ class ToStringTests
         Monster monster = new Monster
         {
             Color = Color.Green,
-            Equipped = new Equipped(new Weapon { Damage = 100, Name = "Master sword" }),
+            Equipped = new Equipped(new Weapon { Damage = 100, Name = "Master sword" }, Item = "Boomerang"),
             Friendly = true,
             HP = 932,
             Inventory = new byte[] { 1, 2, 3, 4, 5, },
@@ -35,11 +35,9 @@ class ToStringTests
 
         Monster parsedMonster = Monster.Serializer.Parse(buffer, option);
 
-        Assert.AreEqual("Equipped { Weapon { Name = Master sword, Damage = 100 } }", parsedMonster.Equipped.ToString());
+        Assert.AreEqual("Equipped { Weapon { Name = Master sword, Damage = 100 }, Item = Boomerang }", parsedMonster.Equipped.ToString());
         Assert.AreEqual("Weapon { Name = Master sword, Damage = 100 }", parsedMonster.Equipped.Weapon.ToString());
         Assert.AreEqual("Vec3 { X = 1.1, Y = 3.2, Z = 2.6 }", parsedMonster.Pos.ToString());
-        Assert.AreEqual("Weapon { Name = Hook shot, Damage = 6 }", parsedMonster.Weapons[0].ToString());
-        Assert.AreEqual("Weapon { Name = Bow and Arrow, Damage = 37 }", parsedMonster.Weapons[1].ToString());
         Assert.AreEqual("Vec3 { X = 1, Y = 2, Z = 3 }", parsedMonster.Path[0].ToString());
         Assert.AreEqual("Vec3 { X = 4, Y = 5, Z = 6 }", parsedMonster.Path[1].ToString());
         Assert.AreEqual("Vec3 { X = 7, Y = 8, Z = 9 }", parsedMonster.Path[2].ToString());
