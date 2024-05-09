@@ -1,4 +1,5 @@
 attribute "fs_serializer";
+attribute "fs_valueStruct";
 
 namespace FlatSharpEndToEndTests.ToStringTests;
 
