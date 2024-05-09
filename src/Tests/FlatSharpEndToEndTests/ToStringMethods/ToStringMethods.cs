@@ -9,9 +9,10 @@ class ToStringTests
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
     public void Table_ToString(FlatBufferDeserializationOption option)
     {
-        MyTable myTable = new MyTable {
+        MyTable myTable = new MyTable 
+        {
             FieldA = "hello",
-            FieldB = 123,
+            FieldB = 123
         };
         int maxBytesNeeded = MyTable.Serializer.GetMaxSize(myTable);
         byte[] buffer = new byte[maxBytesNeeded];
@@ -40,16 +41,19 @@ class ToStringTests
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
     public void Struct_ToString(FlatBufferDeserializationOption option)
     {
-        MyStructs myStructs = new MyStructs {
-            MyStruct = new MyStruct {
+        MyStructs myStructs = new MyStructs 
+        {
+            MyStruct = new MyStruct 
+            {
                 FieldA = 456,
-                FieldB = 123,
+                FieldB = 123
             },
-            MyEmptyStruct = new MyEmptyStruct();
-            MyValueStruct = new MyValueStruct {
+            MyEmptyStruct = new MyEmptyStruct(),
+            MyValueStruct = new MyValueStruct 
+            {
                 FieldX = 2f,
-                FieldY = 3f,
-            },
+                FieldY = 3f
+            }
         };
 
         int maxBytesNeeded = MyStructs.Serializer.GetMaxSize(myStructs);
@@ -65,13 +69,15 @@ class ToStringTests
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
     public void Union_ToString(FlatBufferDeserializationOption option)
     {
-        MyUnions myUnions = new MyUnions {
+        MyUnions myUnions = new MyUnions 
+        {
             FieldA = new MyUnion[]
             {
-                Member1 = new ValueA {
-                    Value = 2,
+                Member1 = new ValueA 
+                {
+                    Value = 2
                 },
-                Member2 = "hello",
+                Member2 = "hello"
             }
         };
 
