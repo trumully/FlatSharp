@@ -1,3 +1,5 @@
+using FlatSharp.Internal;
+
 namespace FlatSharpEndToEndTests.ToString;
 
 [TestClass]
@@ -5,7 +7,7 @@ class ToStringTests
 {
     [TestMethod]
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void Monster_ToString()
+    public void Monster_ToString(FlatBufferDeserializationOption option)
     {
         Monster monster = new Monster
         {
@@ -31,7 +33,7 @@ class ToStringTests
         byte[] buffer = new byte[maxSize];
         int bytesWritten = Monster.Serializer.Write(buffer, monster);
 
-        Monster parsedMonster = Monster.Serializer.Parse(buffer.AsSpan().Slice(0, bytesWritten).ToArray());
+        Monster parsedMonster = Monster.Serializer.Parse(buffer, option);
 
         Assert.AreEqual("Equipped { Weapon { Name = Master sword, Damage = 100 } }", parsedMonster.Equipped.ToString());
         Assert.AreEqual("Weapon { Name = Master sword, Damage = 100 }", parsedMonster.Equipped.Weapon.ToString());
