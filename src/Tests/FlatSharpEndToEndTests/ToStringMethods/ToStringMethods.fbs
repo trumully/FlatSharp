@@ -38,5 +38,5 @@ union MyUnion {
 }
 
 table MyUnions (fs_serializer) {
-    FieldA: MyUnion;
+    FieldA: [MyUnion];
 }
