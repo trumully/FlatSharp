@@ -43,13 +43,12 @@ class ToStringTests
     {
         MyStructs myStructs = new MyStructs 
         {
-            MyStruct = new MyStruct 
+            FieldA = new MyStruct 
             {
                 FieldA = 456,
                 FieldB = 123
             },
-            MyEmptyStruct = new MyEmptyStruct(),
-            MyValueStruct = new MyValueStruct 
+            FieldB = new MyValueStruct 
             {
                 FieldX = 2f,
                 FieldY = 3f
@@ -62,7 +61,7 @@ class ToStringTests
 
         MyStructs deserializedStructs = MyStructs.Serializer.Parse(buffer, option);
 
-        Assert.AreEqual("MyStructs { MyStruct = MyStruct { FieldA = 456, FieldB = 123 }, MyEmptyStruct = MyEmptyStruct { }, MyValueStruct = MyValueStruct { FieldX = 2, FieldY = 3 } }", deserializedStructs.ToString());
+        Assert.AreEqual("MyStructs { FieldA = MyStruct { FieldA = 456, FieldB = 123 }, FieldB = MyValueStruct { FieldX = 2, FieldY = 3 } }", deserializedStructs.ToString());
     }
 
     [TestMethod]
@@ -73,11 +72,11 @@ class ToStringTests
         {
             FieldA = new MyUnion[]
             {
-                Member1 = new ValueA 
+                MemberA = new ValueA 
                 {
                     Value = 2
                 },
-                Member2 = "hello"
+                MemberB = "hello"
             }
         };
 
