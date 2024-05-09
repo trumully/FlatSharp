@@ -68,27 +68,22 @@ class ToStringTests
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
     public void Union_ToString(FlatBufferDeserializationOption option)
     {
-        MyUnions myUnions = new MyUnions 
+        Container c = new Container
         {
             FieldA = new MyUnion[]
             {
-                new MyUnion
-                (
-                MemberA = new ValueA 
-                {
-                    Value = 2
-                },
-                MemberB = "hello"
-                )
+                new MyUnion(new A()),
+                new MyUnion(new B()),
+                new MyUnion(new C()),
+                new MyUnion(new D()),
             }
         };
 
-        int maxBytesNeeded = MyUnions.Serializer.GetMaxSize(myUnions);
-        byte[] buffer = new byte[maxBytesNeeded];
-        int bytesWritten = MyUnions.Serializer.Write(buffer, myUnions);
+        byte[] buffer = new byte[Container.Serializer.GetMaxSize(c)];
+        Container.Serializer.Write(buffer, c);
 
-        MyUnions deserializedUnions = MyUnions.Serializer.Parse(buffer, option);
+        Container deserializedContainer = Container.Serializer.Parse(buffer, option);
 
-        Assert.AreEqual("MyUnions { FieldA = [MyUnion { Member1 = ValueA { Value = 2 } }, MyUnion { Member2 = hello }] }", deserializedUnions.ToString());
+        Assert.AreEqual("Container { FieldA = [A { }, B { }, C { }, D { }] }", deserializedContainer.ToString());
     }
 }

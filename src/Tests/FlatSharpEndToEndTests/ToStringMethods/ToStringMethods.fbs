@@ -30,13 +30,13 @@ table MyStructs (fs_serializer) {
     FieldB: MyValueStruct;
 }
 
-struct ValueA { Value: uint; }
+struct A { V : uint; }
+struct B { V : uint; }
+struct C { V : uint; }
+struct D { V : uint; }
 
-union MyUnion {
-    MemberA: ValueA,
-    MemberB: string
-}
+union MyUnion { A, B, C, D }
 
-table MyUnions (fs_serializer) {
+table Container (fs_serializer) {
     FieldA: [MyUnion];
 }
