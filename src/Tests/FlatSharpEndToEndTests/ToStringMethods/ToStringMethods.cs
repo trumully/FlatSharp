@@ -35,11 +35,6 @@ class ToStringTests
 
         Monster parsedMonster = Monster.Serializer.Parse(buffer, option);
 
-        Assert.AreEqual("Equipped { Weapon { Name = Master sword, Damage = 100 }, Item = Boomerang }", parsedMonster.Equipped.ToString());
-        Assert.AreEqual("Weapon { Name = Master sword, Damage = 100 }", parsedMonster.Equipped.Weapon.ToString());
-        Assert.AreEqual("Vec3 { X = 1.1, Y = 3.2, Z = 2.6 }", parsedMonster.Pos.ToString());
-        Assert.AreEqual("Vec3 { X = 1, Y = 2, Z = 3 }", parsedMonster.Path[0].ToString());
-        Assert.AreEqual("Vec3 { X = 4, Y = 5, Z = 6 }", parsedMonster.Path[1].ToString());
-        Assert.AreEqual("Vec3 { X = 7, Y = 8, Z = 9 }", parsedMonster.Path[2].ToString());
+        Assert.AreEqual("Monster { Color = Green, Equipped = Equipped { Weapon = Weapon { Name = Master sword, Damage = 100 }, Item = Boomerang }, Friendly = True, HP = 932, Inventory = [1, 2, 3, 4, 5], Mana = 32, Name = Link, Pos = Vec3 { X = 1.1, Y = 3.2, Z = 2.6 }, Weapons = [Weapon { Name = Hook shot, Damage = 6 }, Weapon { Name = Bow and Arrow, Damage = 37 }], Path = [Vec3 { X = 1, Y = 2, Z = 3 }, Vec3 { X = 4, Y = 5, Z = 6 }, Vec3 { X = 7, Y = 8, Z = 9 }] }", parsedMonster.ToString());
     }
 }
