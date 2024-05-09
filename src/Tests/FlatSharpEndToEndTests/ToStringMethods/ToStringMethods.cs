@@ -43,7 +43,7 @@ class ToStringTests
     {
         MyStructs myStructs = new MyStructs 
         {
-            FieldA = new MyStruct 
+            FieldA = new MyStruct
             {
                 FieldA = 456,
                 FieldB = 123
