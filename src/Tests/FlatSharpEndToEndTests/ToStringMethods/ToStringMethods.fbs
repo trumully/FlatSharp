@@ -1,38 +1,56 @@
+// Declare FlatSharp attributes.
+
+attribute "fs_vector";
 attribute "fs_serializer";
 attribute "fs_valueStruct";
 
 namespace FlatSharpEndToEndTests.ToStringMethods;
 
-table TableValues (fs_serializer)
+enum Color : byte
 {
-    A : int;
-    B : int;
-    C : int;
+    Red = 0,
+    Green = 1,
+    Blue = 2,
 }
 
-table TableEmpty (fs_serializer)
+// Structs are fixed-size objects whose schema may not change. Structs 
+// are highly efficient to read and write, though they cannot be versioned.
+// Unions of structs can help with versioning.
+struct Vec3 (fs_valueStruct) // fs_valueStruct tells FlatSharp to generate a C# struct (value type) instead of a class
 {
+    x : float;
+    y : float;
+    z : float;
 }
 
-struct RegularStruct
+// Tables are extensible objects that can be extended and have their schema evolved over time.
+// Unlike structs, they are not read all at once and not all fields have to be present.
+table Weapon
 {
-    X : int;
-    Y : int;
-    Z : int;
+    name : string;
+    damage : short;
 }
 
-struct ValueStruct (fs_valueStruct)
+// Unions (Discriminated Unions) are equivalent to Protobuf's oneof.
+// A union will only have one of the items set.
+union Equipped
 {
-    X : int;
-    Y : int;
-    Z : int;
+    Weapon,
+    Item : string
 }
 
-
-union UnionValues { Doggo : Dog, Cat, Fish, someString: string }
-
-table Dog { Breed:string; Age:int; }
-table Cat { Breed:string; Age:int; }
-table Fish { Breed:string; Weight:float64; Age:int; }
-
-union EmptyValues { }
+table Monster (fs_serializer) // Tell FlatSharp to generate a serializer for this type.
+{
+    color : Color;
+    pos : Vec3;
+    mana : short = 150;
+    HP : short = 100;
+    name : string;
+    friendly : bool = false (deprecated);
+    inventory : [ ubyte ] (fs_vector:"Memory");
+    weapons : [ Weapon ];
+    equipped : Equipped;
+    path : [ Vec3 ];
+    mana_regen_rate : double;
+    secondary_color : Color;
+}
