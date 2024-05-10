@@ -1,5 +1,3 @@
-using FlatSharp.Internal;
-
 namespace FlatSharpEndToEndTests.ToStringMethods;
 
 [TestClass]
@@ -16,7 +14,6 @@ class ToStringTests
         };
         int maxBytesNeeded = MyTable.Serializer.GetMaxSize(myTable);
         byte[] buffer = new byte[maxBytesNeeded];
-        int bytesWritten = MyTable.Serializer.Write(buffer, myTable);
 
         MyTable deserializedTable = MyTable.Serializer.Parse(buffer, option);
 
@@ -30,7 +27,6 @@ class ToStringTests
         MyEmptyTable myEmptyTable = new MyEmptyTable();
         int maxBytesNeeded = MyEmptyTable.Serializer.GetMaxSize(myEmptyTable);
         byte[] buffer = new byte[maxBytesNeeded];
-        int bytesWritten = MyEmptyTable.Serializer.Write(buffer, myEmptyTable);
 
         MyEmptyTable deserializedTable = MyEmptyTable.Serializer.Parse(buffer, option);
 
@@ -57,7 +53,6 @@ class ToStringTests
 
         int maxBytesNeeded = MyStructs.Serializer.GetMaxSize(myStructs);
         byte[] buffer = new byte[maxBytesNeeded];
-        int bytesWritten = MyStructs.Serializer.Write(buffer, myStructs);
 
         MyStructs deserializedStructs = MyStructs.Serializer.Parse(buffer, option);
 
