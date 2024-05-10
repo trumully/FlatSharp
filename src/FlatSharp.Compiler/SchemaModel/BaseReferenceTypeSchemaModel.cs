@@ -86,8 +86,7 @@ public abstract class BaseReferenceTypeSchemaModel : BaseSchemaModel
                 writer.AppendLine("this.OnInitialized(context);");
             }
 
-            var orderedProperties = this.properties.OrderBy(x => x.Key);
-            foreach (var property in orderedProperties)
+            foreach (var property in this.properties.OrderBy(x => x.Key))
             {
                 int index = property.Key;
                 PropertyFieldModel model = property.Value;

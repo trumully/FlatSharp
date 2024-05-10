@@ -1,7 +1,7 @@
 namespace FlatSharpEndToEndTests.ToStringMethods;
 
 [TestClass]
-class ToStringTests
+public class ToStringTests
 {
     [TestMethod]
     [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
