@@ -159,7 +159,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
             writer.AppendLine();
             writer.AppendLine("public byte Discriminator { get; }");
 
-            string itemStrings = string.Join(", ", innerTypes.Select(x => $"{x.value.Key} = {{this.Item{x.value.Value}}}"));
+            string itemStrings = string.Join(", ", innerTypes.Select(x => $"{x.value.Key} = {{this.{x.value.Key}.ToString()}}"));
             string itemStringsWithSpace = this.union.Values.Count == 0 ? " " : $" {itemStrings} ";
             writer.AppendLine($"public override string ToString() => $\"{this.Name} {{{{{itemStringsWithSpace}}}}}\";");
 
