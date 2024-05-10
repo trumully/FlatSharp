@@ -65,7 +65,7 @@ public class ToStringTests
     {
         Container c = new Container
         {
-            FieldA = new MyUnion[]
+            Value = new MyUnion[]
             {
                 new MyUnion(new A()),
                 new MyUnion(new B()),
@@ -79,6 +79,6 @@ public class ToStringTests
 
         Container deserializedContainer = Container.Serializer.Parse(buffer, option);
 
-        Assert.AreEqual("Container { FieldA = { A, B, C, D }", deserializedContainer.ToString());
+        Assert.AreEqual("Container { Value = { A, B, C, D }", deserializedContainer.ToString());
     }
 }

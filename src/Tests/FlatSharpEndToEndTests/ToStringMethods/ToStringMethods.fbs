@@ -38,5 +38,5 @@ struct D { V : uint; }
 union MyUnion { A, B, C, D }
 
 table Container (fs_serializer) {
-    FieldA: [MyUnion];
+    Value: [MyUnion];
 }
