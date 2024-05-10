@@ -152,7 +152,7 @@ public class ValueStructSchemaModel : BaseSchemaModel
             // This matches C# records
             string fieldStrings = string.Join(", ", this.fields.Select(x => $"{x.Name} = {{this.{x.Name}}}"));
             string fieldStringsWithSpace = this.fields.Count == 0 ? " " : $" {fieldStrings} ";
-            writer.AppendLine($"""public override string ToString() => $"{this.Name} {{{{{fieldStringsWithSpace}}}}}";""");
+            writer.AppendLine($"public override string ToString() => $\"{this.Name} {{{{{fieldStringsWithSpace}}}}}\";");
 
             foreach (var sv in this.structVectors)
             {
