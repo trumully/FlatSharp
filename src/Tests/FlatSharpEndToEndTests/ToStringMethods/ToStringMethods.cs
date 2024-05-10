@@ -79,6 +79,6 @@ public class ToStringTests
 
         Container deserializedContainer = Container.Serializer.Parse(buffer, option);
 
-        Assert.AreEqual("Container { FieldA = [A { }, B { }, C { }, D { }] }", deserializedContainer.ToString());
+        Assert.AreEqual("Container { FieldA = { A = { }, B = { }, C { }, D = { } }", deserializedContainer.ToString());
     }
 }
