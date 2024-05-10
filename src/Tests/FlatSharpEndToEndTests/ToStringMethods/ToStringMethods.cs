@@ -67,10 +67,10 @@ public class ToStringTests
         {
             FieldA = new MyUnion[]
             {
-                new MyUnion(new A()),
-                new MyUnion(new B()),
-                new MyUnion(new C()),
-                new MyUnion(new D()),
+                new MyUnion(new A{V = 1}),
+                new MyUnion(new B{V = 2}),
+                new MyUnion(new C{V = 3}),
+                new MyUnion(new D{V = 4}),
             }
         };
 
@@ -79,6 +79,6 @@ public class ToStringTests
 
         Container deserializedContainer = Container.Serializer.Parse(buffer, option);
 
-        Assert.AreEqual("Container { FieldA = { A = A { V = { } }, B = B { V = { } }, C = C { V = { } }, D = D { V = { } } }", deserializedContainer.ToString());
+        Assert.AreEqual("Container { FieldA = { A { V = 1 }, B { V = 2 }, C { V = 3 }, D { V = 4 } }", deserializedContainer.ToString());
     }
 }
