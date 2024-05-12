@@ -54,14 +54,14 @@ public class ToStringTests
         {
             Value = new StructUnion[]
             {
-                new StructUnion(new A()),
-                new StructUnion(new B()),
-                new StructUnion(new C()),
-                new StructUnion(new D()),
+                new A(),
+                new B(),
+                new C(),
+                new D(),
             }
         };
 
-        Assert.AreEqual("StructContainer { Value = { A, B, C, D }", c.ToString());
+        Assert.AreEqual("StructContainer { Value = { A, B, C, D } }", c.ToString());
     }
 
     [TestMethod]
@@ -71,8 +71,8 @@ public class ToStringTests
         {
             Value = new TableUnion[]
             {
-                new TableUnion(new MyTable()),
-                new TableUnion(new MyEmptyTable()),
+                new MyTable(),
+                new MyEmptyTable(),
             }
         };
 
@@ -86,10 +86,10 @@ public class ToStringTests
         {
             Value = new MixedUnion[]
             {
-                new MixedUnion(new A()),
-                new MixedUnion(new B()),
-                new MixedUnion(new MyTable()),
-                new MixedUnion(new MyEmptyTable()),
+                new A(),
+                new B(),
+                new MyTable(),
+                new MyEmptyTable(),
             }
         };
 
