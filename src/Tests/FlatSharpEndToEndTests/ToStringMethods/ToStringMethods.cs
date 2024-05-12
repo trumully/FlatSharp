@@ -88,7 +88,7 @@ public class ToStringTests
             {
                 new MixedUnion(new A()),
                 new MixedUnion(new B()),
-                new MixedUnion(new MyTable());
+                new MixedUnion(new MyTable()),
                 new MixedUnion(new MyEmptyTable()),
             }
         };
