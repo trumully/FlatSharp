@@ -40,11 +40,11 @@ public class ToStringTests
     {
         MyValueStruct myValueStruct = new MyValueStruct
         {
-            FieldA = 456,
-            FieldB = 123
+            FieldX = 1f,
+            FieldY = 2f
         };
 
-        Assert.AreEqual("MyValueStruct { FieldA = 456, FieldB = 123 }", myValueStruct.ToString());
+        Assert.AreEqual("MyValueStruct { FieldX = 1, FieldY = 2 }", myValueStruct.ToString());
     }
 
     [TestMethod]
