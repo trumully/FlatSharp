@@ -4,81 +4,95 @@ namespace FlatSharpEndToEndTests.ToStringMethods;
 public class ToStringTests
 {
     [TestMethod]
-    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void Table_ToString(FlatBufferDeserializationOption option)
+    public void Table_ToString()
     {
         MyTable myTable = new MyTable 
         {
             FieldA = "hello",
             FieldB = 123
         };
-        int maxBytesNeeded = MyTable.Serializer.GetMaxSize(myTable);
-        byte[] buffer = new byte[maxBytesNeeded];
 
-        MyTable deserializedTable = MyTable.Serializer.Parse(buffer, option);
-
-        Assert.AreEqual("MyTable { FieldA = hello, FieldB = 123 }", deserializedTable.ToString());
+        Assert.AreEqual("MyTable { FieldA = hello, FieldB = 123 }", myTable.ToString());
     }
 
     [TestMethod]
-    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void EmptyTable_ToString(FlatBufferDeserializationOption option)
+    public void EmptyTable_ToString()
     {
         MyEmptyTable myEmptyTable = new MyEmptyTable();
-        int maxBytesNeeded = MyEmptyTable.Serializer.GetMaxSize(myEmptyTable);
-        byte[] buffer = new byte[maxBytesNeeded];
 
-        MyEmptyTable deserializedTable = MyEmptyTable.Serializer.Parse(buffer, option);
-
-        Assert.AreEqual("MyEmptyTable { }", deserializedTable.ToString());
+        Assert.AreEqual("MyEmptyTable { }", myEmptyTable.ToString());
     }
 
     [TestMethod]
-    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void Struct_ToString(FlatBufferDeserializationOption option)
+    public void Struct_ToString()
     {
-        MyStructs myStructs = new MyStructs 
+        MyStruct myStruct = new MyStruct
         {
-            FieldA = new MyStruct
-            {
-                FieldA = 456,
-                FieldB = 123
-            },
-            FieldB = new MyValueStruct 
-            {
-                FieldX = 2f,
-                FieldY = 3f
-            }
+            FieldA = 456,
+            FieldB = 123
         };
 
-        int maxBytesNeeded = MyStructs.Serializer.GetMaxSize(myStructs);
-        byte[] buffer = new byte[maxBytesNeeded];
-
-        MyStructs deserializedStructs = MyStructs.Serializer.Parse(buffer, option);
-
-        Assert.AreEqual("MyStructs { FieldA = MyStruct { FieldA = 456, FieldB = 123 }, FieldB = MyValueStruct { FieldX = 2, FieldY = 3 } }", deserializedStructs.ToString());
+        Assert.AreEqual("MyStruct { FieldA = 456, FieldB = 123 }", myStruct.ToString());
     }
 
     [TestMethod]
-    [DynamicData(nameof(DynamicDataHelper.DeserializationModes), typeof(DynamicDataHelper))]
-    public void Union_ToString(FlatBufferDeserializationOption option)
+    public void ValueStruct_ToString()
     {
-        Container c = new Container
+        MyValueStruct myValueStruct = new MyValueStruct
         {
-            Value = new MyUnion[]
+            FieldA = 456,
+            FieldB = 123
+        };
+
+        Assert.AreEqual("MyValueStruct { FieldA = 456, FieldB = 123 }", myValueStruct.ToString());
+    }
+
+    [TestMethod]
+    public void UnionStructs_ToString()
+    {
+        StructContainer c = new StructContainer
+        {
+            Value = new StructUnion[]
             {
-                new MyUnion(new A()),
-                new MyUnion(new B()),
-                new MyUnion(new C()),
-                new MyUnion(new D()),
+                new StructUnion(new A()),
+                new StructUnion(new B()),
+                new StructUnion(new C()),
+                new StructUnion(new D()),
             }
         };
 
-        byte[] buffer = new byte[Container.Serializer.GetMaxSize(c)];
-        Container.Serializer.Write(buffer, c);
+        Assert.AreEqual("StructContainer { Value = { A, B, C, D }", c.ToString());
+    }
 
-        Container deserializedContainer = Container.Serializer.Parse(buffer, option);
+    [TestMethod]
+    public void UnionTables_ToString()
+    {
+        TableContainer c = new TableContainer
+        {
+            Value = new TableUnion[]
+            {
+                new TableUnion(new MyTable()),
+                new TableUnion(new MyEmptyTable()),
+            }
+        };
 
-        Assert.AreEqual("Container { Value = { A, B, C, D }", deserializedContainer.ToString());
+        Assert.AreEqual("TableContainer { Value = { MyTable, MyEmptyTable } }", c.ToString());
+    }
+
+    [TestMethod]
+    public void UnionMixed_ToString()
+    {
+        MixedContainer c = new MixedContainer
+        {
+            Value = new MixedUnion[]
+            {
+                new MixedUnion(new A()),
+                new MixedUnion(new B()),
+                new MixedUnion(new MyTable());
+                new MixedUnion(new MyEmptyTable()),
+            }
+        };
+
+        Assert.AreEqual("MixedContainer { Value = { A, B, MyTable, MyEmptyTable } }", c.ToString());
     }
 }

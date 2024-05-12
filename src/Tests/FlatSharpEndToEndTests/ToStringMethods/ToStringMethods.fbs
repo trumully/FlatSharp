@@ -25,18 +25,25 @@ struct MyValueStruct (fs_valueStruct) {
     FieldY: float;
 }
 
-table MyStructs (fs_serializer) {
-    FieldA: MyStruct;
-    FieldB: MyValueStruct;
-}
-
 struct A { V : uint; }
 struct B { V : uint; }
 struct C { V : uint; }
 struct D { V : uint; }
 
-union MyUnion { A, B, C, D }
+union StructUnion { A, B, C, D }
 
-table Container (fs_serializer) {
-    Value: [MyUnion];
+table StructContainer (fs_serializer) {
+    Value: [StructUnion];
+}
+
+union TableUnion { MyTable, MyEmptyTable }
+
+table TableContainer (fs_serializer) {
+    Value: [TableUnion];
+}
+
+union MixedUnion { A, B, MyTable, MyEmptyTable }
+
+table MixedContainer (fs_serializer) {
+    Value: [MixedUnion];
 }
