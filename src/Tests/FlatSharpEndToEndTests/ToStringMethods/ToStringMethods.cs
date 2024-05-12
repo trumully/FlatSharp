@@ -61,7 +61,7 @@ public class ToStringTests
             }
         };
 
-        Assert.AreEqual("StructContainer { Value = { A, B, C, D } }", c.ToString());
+        Assert.AreEqual("StructContainer { Value = FlatSharpEndToEndTests.ToStringMethods.StructUnion[] }", c.ToString());
     }
 
     [TestMethod]
@@ -76,7 +76,7 @@ public class ToStringTests
             }
         };
 
-        Assert.AreEqual("TableContainer { Value = { MyTable, MyEmptyTable } }", c.ToString());
+        Assert.AreEqual("TableContainer { Value = FlatSharpEndToEndTests.ToStringMethods.TableUnion[] }", c.ToString());
     }
 
     [TestMethod]
@@ -93,6 +93,6 @@ public class ToStringTests
             }
         };
 
-        Assert.AreEqual("MixedContainer { Value = { A, B, MyTable, MyEmptyTable } }", c.ToString());
+        Assert.AreEqual("MixedContainer { Value = FlatSharpEndToEndTests.ToStringMethods.MixedUnion[] }", c.ToString());
     }
 }
