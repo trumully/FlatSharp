@@ -54,10 +54,10 @@ public class ToStringTests
         {
             Value = new StructUnion[]
             {
-                new A(),
-                new B(),
-                new C(),
-                new D(),
+                new StructUnion(new A()),
+                new StructUnion(new B()),
+                new StructUnion(new C()),
+                new StructUnion(new D()),
             }
         };
 
@@ -71,8 +71,8 @@ public class ToStringTests
         {
             Value = new TableUnion[]
             {
-                new MyTable(),
-                new MyEmptyTable(),
+                new TableUnion(new MyTable()),
+                new TableUnion(new MyEmptyTable()),
             }
         };
 
@@ -86,10 +86,10 @@ public class ToStringTests
         {
             Value = new MixedUnion[]
             {
-                new A(),
-                new B(),
-                new MyTable(),
-                new MyEmptyTable(),
+                new MixedUnion(new A()),
+                new MixedUnion(new B()),
+                new MixedUnion(new MyTable()),
+                new MixedUnion(new MyEmptyTable()),
             }
         };
 
