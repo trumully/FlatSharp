@@ -32,18 +32,6 @@ struct D { V : uint; }
 
 union StructUnion { A, B, C, D }
 
-table StructContainer (fs_serializer) {
-    Value: [StructUnion];
-}
-
 union TableUnion { MyTable, MyEmptyTable }
 
-table TableContainer (fs_serializer) {
-    Value: [TableUnion];
-}
-
 union MixedUnion { A, B, MyTable, MyEmptyTable }
-
-table MixedContainer (fs_serializer) {
-    Value: [MixedUnion];
-}
