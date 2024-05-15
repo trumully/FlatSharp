@@ -71,11 +71,7 @@ public class StructEqualityTests
         MixedValueStruct mixedValueStruct = new MixedValueStruct { X = 1, Y = 2f, Z = (ushort)5 };
         StructUnion structUnion = new StructUnion(new A { V = 1 });
 
-        // ValueStruct uses its ToTuple() method for hash code. Union uses its discriminator and (private) value for hash code
-        var expectedValueStructTuple = (1, 2f, (ushort)5);
-        var expectedUnionTuple = (1, structUnion.Item1);
-
-        Assert.AreEqual(expectedValueStructTuple.GetHashCode(), mixedValueStruct.GetHashCode());
-        Assert.AreEqual(expectedUnionTuple.GetHashCode(), structUnion.GetHashCode());
+        Assert.AreEqual(new MixedValueStruct { X = 1, Y = 2f, Z = (ushort)5 }.GetHashCode(), mixedValueStruct.GetHashCode());
+        Assert.AreEqual(new StructUnion(new A { V = 1 }).GetHashCode(), structUnion.GetHashCode());
     }
 }
