@@ -150,6 +150,7 @@ public class ValueStructSchemaModel : BaseSchemaModel
                 writer.AppendLine();
             }
 
+            /*
             string typeNames = string.Join(", ", this.fields.Select(x => x.TypeName));
             string names = string.Join(", ", this.fields.Select(x => x.Name));
             string tupleType = this.fields.Count == 0 ? "System.ValueTuple" : this.fields.Count == 1 ? $"System.ValueTuple<{typeNames}>" : $"({typeNames})";
@@ -160,6 +161,7 @@ public class ValueStructSchemaModel : BaseSchemaModel
             writer.AppendLine($"public static bool operator ==({this.Name} left, {this.Name} right) => left.Equals(right);");
             writer.AppendLine($"public static bool operator !=({this.Name} left, {this.Name} right) => !left.Equals(right);");
             writer.AppendLine("public override int GetHashCode() => ToTuple().GetHashCode();");
+            */
 
             foreach (var sv in this.structVectors)
             {

@@ -163,6 +163,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
             writer.AppendLine();
             writer.AppendLine("public byte Discriminator { get; }");
 
+            /*
             if (!generateUnsafeItems)
             {
                 writer.AppendLine();
@@ -172,6 +173,7 @@ public class ValueUnionSchemaModel : BaseSchemaModel
                 writer.AppendLine($"public static bool operator !=({this.Name} left, {this.Name} right) => !left.Equals(right);");
                 writer.AppendLine("public override int GetHashCode() => (this.Discriminator, this.value).GetHashCode();");
             }
+            */
 
             foreach (var item in innerTypes)
             {
